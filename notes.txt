@@ -1,0 +1,1 @@
+- generate dummy model in prisma schema and push the database to generate the prisma client. <pnpx prisma db push>

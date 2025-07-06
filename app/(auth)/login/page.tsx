@@ -21,7 +21,7 @@ export default function LoginPage() {
         </CardDescription>
       </CardHeader>
       <CardContent className='flex flex-col gap-4'>
-        <Button className='w-full' variant='outline'>
+        <Button className='w-full cursor-pointer' variant='outline'>
           <GithubIcon className='size-4' />
           Sign in with Github
         </Button>
@@ -37,7 +37,7 @@ export default function LoginPage() {
             <Label htmlFor='email'>Email</Label>
             <Input type='email' id='email' placeholder='john.doe@example.com' />
           </div>
-          <Button className='mt-2'>Continue with Email</Button>
+          <Button className='mt-2 cursor-pointer'>Continue with Email</Button>
         </div>
       </CardContent>
     </Card>
