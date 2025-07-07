@@ -1,45 +1,17 @@
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { GithubIcon } from 'lucide-react';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import LoginForm from './_components/login-form';
+import { redirect } from 'next/navigation';
 
-export default function LoginPage() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className='text-xl'>Welcome Back!</CardTitle>
-        <CardDescription className='text-muted-foreground'>
-          Login in with your credentials.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className='flex flex-col gap-4'>
-        <Button className='w-full cursor-pointer' variant='outline'>
-          <GithubIcon className='size-4' />
-          Sign in with Github
-        </Button>
+export default async function LoginPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-        <div className='relative text-center text-sm after:absolute after:inset-0 after:flex after:items-center after:top-1/2 after:z-0 after:border-t after:border-border'>
-          <span className='relative z-10 bg-card px-2 text-muted-foreground'>
-            Or continue with
-          </span>
-        </div>
+  if (session) {
+    // If the user is already logged in, redirect them to the home page
+    return redirect('/'); 
+  }
 
-        <div className='grid gap-3'>
-          <div className='grid gap-2'>
-            <Label htmlFor='email'>Email</Label>
-            <Input type='email' id='email' placeholder='john.doe@example.com' />
-          </div>
-          <Button className='mt-2 cursor-pointer'>Continue with Email</Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
+  return <LoginForm />;
 }
