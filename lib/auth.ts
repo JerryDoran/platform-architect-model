@@ -2,6 +2,8 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { prisma } from './db';
 import { env } from './env';
+import { emailOTP } from 'better-auth/plugins';
+import { resend } from './resend';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -17,4 +19,16 @@ export const auth = betterAuth({
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
+  plugins: [
+    emailOTP({
+      async sendVerificationOTP({ email, otp }) {
+        await resend.emails.send({
+          from: 'Platform Architect <onboarding@email.jerrydoran.dev>',
+          to: [email],
+          subject: 'Platform Architect - Email Verification',
+          html: `<p>Your verification code is: <strong>${otp}</strong></p>`,
+        });
+      },
+    }),
+  ],
 });

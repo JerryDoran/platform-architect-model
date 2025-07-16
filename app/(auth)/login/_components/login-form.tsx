@@ -1,8 +1,8 @@
 'use client';
 
-import { signIn } from '@/lib/auth-client';
-import { GithubIcon, Loader2 } from 'lucide-react';
-import { useTransition } from 'react';
+import { emailOtp, signIn } from '@/lib/auth-client';
+import { GithubIcon, Loader2, Send } from 'lucide-react';
+import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 
 import { Label } from '@/components/ui/label';
@@ -15,9 +15,14 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { start } from 'repl';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
   const [githubIsPending, startGithubTransition] = useTransition();
+  const [emailIsPending, startEmailTransition] = useTransition();
+  const [email, setEmail] = useState('');
+  const router = useRouter();
 
   async function handleGithubSignIn() {
     startGithubTransition(async () => {
@@ -37,6 +42,27 @@ export default function LoginForm() {
       });
     });
   }
+
+  function signInwithEmail() {
+    startEmailTransition(async () => {
+      await emailOtp.sendVerificationOtp({
+        email,
+        type: 'sign-in',
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success('Verification code sent!');
+            router.push(`/verify-request`);
+          },
+          onError: () => {
+            toast.error(
+              'Oops, there was an error sending the verification code!'
+            );
+          },
+        },
+      });
+    });
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -72,9 +98,33 @@ export default function LoginForm() {
         <div className='grid gap-3'>
           <div className='grid gap-2'>
             <Label htmlFor='email'>Email</Label>
-            <Input type='email' id='email' placeholder='john.doe@example.com' />
+            <Input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type='email'
+              id='email'
+              placeholder='john.doe@example.com'
+              required
+            />
           </div>
-          <Button className='mt-2 cursor-pointer'>Continue with Email</Button>
+          <Button
+            className='mt-2 cursor-pointer'
+            onClick={signInwithEmail}
+            disabled={emailIsPending}
+          >
+            {emailIsPending ? (
+              <>
+                {' '}
+                <Loader2 className='size-4 animate-spin' />{' '}
+                <span>Signing in...</span>
+              </>
+            ) : (
+              <>
+                <Send className='size-4' />
+                <span>Continue with Email</span>
+              </>
+            )}
+          </Button>
         </div>
       </CardContent>
     </Card>

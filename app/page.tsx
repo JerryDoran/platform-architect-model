@@ -1,16 +1,25 @@
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
+'use client';
 
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
+import { signOut, useSession } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
-export default async function Home() {
-  // Fetch the session from the auth API which is on the server side
-  // This is a server component, so we can directly call the auth API
-  // and get the session without needing to use a client-side hook.
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+export default function Home() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  async function handleSignOut() {
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push('/');
+          toast.success('Successfully signed out!');
+        },
+      },
+    });
+  }
 
   return (
     <div className='p-8'>
@@ -20,6 +29,9 @@ export default async function Home() {
         <div>
           <p>Welcome, {session.user.name}!</p>
           <p>Email: {session.user.email}</p>
+          <Button onClick={handleSignOut} className='cursor-pointer'>
+            Logout
+          </Button>
         </div>
       ) : (
         <Button>Login</Button>
