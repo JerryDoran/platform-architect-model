@@ -1,1 +1,3 @@
 - generate dummy model in prisma schema and push the database to generate the prisma client. <pnpx prisma db push>
+
+- owasp.org/www-project-top-ten - list the top ten web application security risks.      Arcjet defends against these.

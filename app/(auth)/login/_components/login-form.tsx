@@ -1,6 +1,7 @@
 'use client';
 
 import { emailOtp, signIn } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 import { GithubIcon, Loader2, Send } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
@@ -15,8 +16,6 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { start } from 'repl';
-import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
   const [githubIsPending, startGithubTransition] = useTransition();
@@ -51,7 +50,7 @@ export default function LoginForm() {
         fetchOptions: {
           onSuccess: () => {
             toast.success('Verification code sent!');
-            router.push(`/verify-request`);
+            router.push(`/verify-request?email=${email}`);
           },
           onError: () => {
             toast.error(

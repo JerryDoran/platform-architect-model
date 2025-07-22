@@ -3,6 +3,7 @@
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { signOut, useSession } from '@/lib/auth-client';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -34,7 +35,7 @@ export default function Home() {
           </Button>
         </div>
       ) : (
-        <Button>Login</Button>
+        <Link href='/login'>Login</Link>
       )}
     </div>
   );
